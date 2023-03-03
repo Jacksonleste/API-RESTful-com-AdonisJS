@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Comment from 'App/Models/Comment'
 import Moment from 'App/Models/Moment'
@@ -31,15 +32,43 @@ export default class CommentsController {
 
         const comment = await Comment.findOrFail(params.id)
 
-        comment.comment = body.comment
+        if (comment.momentId == momentId){
+            comment.comment = body.comment
 
-        await comment.save()
+            await comment.save()
 
-        response.status(201)
-        
-        return {
-            msg: "Comentário Atualizado",
-            data: comment
+            response.status(201)
+            
+            return {
+                msg: "Comentário Atualizado",
+                data: comment
+            }
+        }else{
+            response.status(204)
+        }
+    }
+
+    public async destroy({params, request, response}:HttpContextContract){
+        const body = request.body()
+
+        const momentId = params.momentId
+
+        await Moment.findOrFail(momentId)
+
+        const comment = await Comment.findOrFail(params.id)
+
+        if (comment.momentId == momentId){
+
+            await comment.delete()
+
+            response.status(201)
+            
+            return {
+                msg: "Comentário Removido!",
+                data: comment
+            }
+        }else{
+            response.status(204)
         }
     }
 }
