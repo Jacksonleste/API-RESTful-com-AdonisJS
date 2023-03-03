@@ -18,11 +18,11 @@ export default class MomentsController {
         const image = request.file('image', this.validationOptions)
 
         if(image){
-            const imageName = `${uuidv4()}.${image.extname}`
+            const imageName = `${uuidv4()}.${image!.extname}`
 
-            await image.move(Application.tmpPath('upload'))
-
-            body.image = imageName
+            await image.move(Application.tmpPath('upload'), {
+                name: imageName,
+            })
         }
 
         const moment = await Moment.create(body)
@@ -38,7 +38,10 @@ export default class MomentsController {
     public async index(){
         const moments = await Moment.query().preload('comments')
         
-        return moments
+        return {
+            message: "Todos os Moments Listados!",
+            data: moments
+        }
     }
 
     public async show({params}: HttpContextContract){
@@ -78,9 +81,9 @@ export default class MomentsController {
             if(image){
                 const imageName = `${uuidv4()}.${image.extname}`
 
-                await image.move(Application.tmpPath('upload'))
-
-                moment.image = imageName
+                await image.move(Application.tmpPath('upload'), {
+                    name: imageName,
+                })
             }
 
             await moment.save()
