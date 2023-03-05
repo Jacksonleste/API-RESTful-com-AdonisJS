@@ -20,11 +20,9 @@ export default class MomentsController {
         if(image){
             const imageName = `${uuidv4()}.${image!.extname}`
 
-            await image.move(Application.tmpPath('uploads'), {
-                name: imageName,
-            });
-            
-            body.image = imageName;
+            await image.move(Application.tmpPath('upload'))
+
+            body.image = imageName
         }
 
 
@@ -84,11 +82,9 @@ export default class MomentsController {
             if(image){
                 const imageName = `${uuidv4()}.${image.extname}`
 
-                await image.move(Application.tmpPath('uploads'), {
-                    name: imageName,
-                })
+                await image.move(Application.tmpPath('upload'))
 
-                moment.image = imageName;
+                moment.image = imageName
             }
 
             await moment.save()
